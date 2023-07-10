@@ -9,13 +9,13 @@ To use DebugLikePro-and-Rust in your TypeScript project, follow these steps:
 1. Clone the repository:
 
    ```shell
-   git clone https://github.com/your-username/DebugLikePro-and-Rust.git
+   git clone https://github.com/alk-neq-me/beach.git
    ```
 
 2. Install the dependencies:
 
    ```shell
-   cd DebugLikePro-and-Rust
+   cd beach
    npm install
    ```
 
