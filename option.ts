@@ -60,3 +60,4 @@ export const Some = OptionIml.Some;
 export const None = OptionIml.None;
 
 export const Option = OptionIml as OptionConstructor;
+export default Option;

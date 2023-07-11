@@ -1,4 +1,4 @@
-import { None, Option, Some } from './option';
+import Option, { None, Some } from './option';
 import Result, { Err, Ok } from './result'
 
 
@@ -14,13 +14,14 @@ function calculate(div: number): Result<number, string> {
 
 
 async function promise(err: boolean): Promise<Result<string, MyErrorEnum>> {
-  const err_data: Option<string> = await Promise.reject().then(d => Some<string>(d)).catch(_ => None<string>())
-  const ok_data: Option<string> = await Promise.resolve("hello, world").then(d => Some<string>(d)).catch(_ => None<string>())
+  const err_data: Option<string> = await Promise.reject().then(d => Some(d)).catch(_ => None())
+  const ok_data: Option<string> = await Promise.resolve("hello, world").then(d => Some(d)).catch(_ => None())
 
   if (err && err_data.is_some()) return Ok(err_data.unwrap());
   if (!err && ok_data.is_some()) return Ok(ok_data.unwrap());
   return Err("ServerError500");
 }
+
 
 (async function main() {
   const data = calculate(0).is_ok();
