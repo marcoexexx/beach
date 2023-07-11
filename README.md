@@ -1,10 +1,10 @@
-# DebugLikePro-and-Rust
+# Beach 🏖️🦀
 
-DebugLikePro-and-Rust is a TypeScript project that provides debugging functionalities inspired by the Rust programming language. It includes implementations of Result and Option types, as well as error handling with error enums. The project aims to enhance debugging capabilities by enabling more structured and expressive error handling.
+Beach is a TypeScript project that provides debugging functionalities inspired by the Rust programming language. It includes implementations of Result and Option types, as well as error handling with error enums. The project aims to enhance debugging capabilities by enabling more structured and expressive error handling.
 
 ## Installation
 
-To use DebugLikePro-and-Rust in your TypeScript project, follow these steps:
+To use Beach in your TypeScript project, follow these steps:
 
 1. Clone the repository:
 
@@ -49,7 +49,7 @@ The Option type represents an optional value that can either contain a value (`S
 1. Import the Option module:
 
    ```typescript
-   import { Option, Some, None } from './option';
+   import Option, { Some, None } from './option';
    ```
 
 2. Use the Option type in your code:
