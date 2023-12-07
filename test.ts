@@ -18,17 +18,22 @@ function fetch_data(key: string): Result<string, CustomError> {
   return ok(data)
 }
 
+class AsyncResult<T, E> extends Result<T, E> {
+  match({ Ok, Err }: { Ok: <U>(value: T) => U, Err: (err: E) => void }) {
+  }
+}
 
-async function fetch_data_async(key: string): Promise<Result<string, CustomError>> {
+const asyncOk = <T>(value: T) => new AsyncResult<T, never>("ok" ,value)
+const asyncErr = <E>(value: E) => new AsyncResult<never, E>("err" ,value)
+
+
+function fetch_data_async(key: string) {
   const data = {
     cat: "Tom",
     mouse: "Jerry"
   }[key]
 
-  return new Promise((resolve, reject) => {
-    if (!data) return reject(err(new CustomError()))
-    return resolve(ok(data))
-  })
+  return !data ? asyncErr(new CustomError()) : asyncOk(data)
 }
 
 
@@ -43,6 +48,10 @@ const x = unsafe(0)
 console.log(x.is_err())
 console.log(fetch_data("dog").is_err())
 
-
-const data_async = fetch_data_async("dog")
-  .then(v => console.log(v.is_err()))
+async function main() {
+  const data = fetch_data_async("dog").match({
+    Ok: (v) => 
+  })
+  console.log(data)
+}
+main()

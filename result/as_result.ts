@@ -11,4 +11,3 @@ export function as_result<Args extends any[], ReturnType>(fn: (...args: Args) =>
     }
   }
 }
-
