@@ -13,13 +13,13 @@ export class Result<T, E> {
     return this._type === "ok"
   }
 
-  ok() {
-    if (this.value) return this.value
+  ok(): T | undefined {
+    if (this.value) return this.value as T
     return undefined
   }
 
-  err() {
-    if (this.value) return this.value
+  err(): E | undefined {
+    if (this.value) return this.value as E
     return undefined
   }
 }
