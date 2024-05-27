@@ -1,3 +1,3 @@
-import { Result } from ".";
+import { Result, ToString } from ".";
 
-export const ok = <T>(value: T) => new Result<T, never>("ok", value)
+export const Ok = <T extends ToString>(value: T) => new Result<T, never>("ok", value)

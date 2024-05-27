@@ -18,9 +18,9 @@ This TypeScript library provides a `Result` type, inspired by Rust's Result type
 ```typescript
 function divide(a: number, b: number): Result<number, string> {
   if (b === 0) {
-    return err('Division by zero');
+    return Err('Division by zero');
   } else {
-    return ok(a / b);
+    return Ok(a / b);
   }
 }
 
