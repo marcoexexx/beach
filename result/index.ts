@@ -1,5 +1,5 @@
 import { Err } from "./err";
-import { unwrap_failed } from "./excceptions";
+import { unwrap_failed } from "./exceptions";
 import { Ok } from "./ok";
 
 export * from "./err";
@@ -9,7 +9,7 @@ export interface ToString {
   toString(): string;
 }
 
-export class Result<T extends ToString, E extends ToString> {
+export class Result<T, E extends ToString> {
   _type: "ok" | "err";
   value: T | E;
 
@@ -18,10 +18,21 @@ export class Result<T extends ToString, E extends ToString> {
     this.value = value;
   }
 
-  static try<Args extends any[], ReturnType extends ToString>(fn: (...args: Args) => ReturnType) {
+  static try<Args extends any[], ReturnType>(fn: (...args: Args) => ReturnType) {
     return function(...args: Args): Result<ReturnType, Error> {
       try {
-        const func = fn(...args);
+        let func = fn(...args);
+        return Ok(func);
+      } catch (e: any) {
+        return Err(e);
+      }
+    };
+  }
+
+  static try_async<Args extends any[], ReturnType>(fn: (...args: Args) => Promise<ReturnType>) {
+    return async function(...args: Args): Promise<Result<ReturnType, Error>> {
+      try {
+        let func = await fn(...args);
         return Ok(func);
       } catch (e: any) {
         return Err(e);
@@ -56,12 +67,17 @@ export class Result<T extends ToString, E extends ToString> {
   }
 
   ok(): T | undefined {
-    if (this.value) return this.value as T;
+    if (this.value && this.is_ok()) return this.value as T;
     return undefined;
   }
 
+  ok_or(x: E): Result<Exclude<T, undefined>, E> {
+    if (this._type === "ok" && !this.value) return Err(x);
+    return Ok(this.value as Exclude<T, undefined>);
+  }
+
   err(): E | undefined {
-    if (this.value) return this.value as E;
+    if (this.value && this.is_err()) return this.value as E;
     return undefined;
   }
 
@@ -188,5 +204,10 @@ export class Result<T extends ToString, E extends ToString> {
       case "err":
         return this.value as E;
     }
+  }
+
+  ok_or_throw(): T {
+    if (this.is_ok()) return this.value as T;
+    throw this.value;
   }
 }
