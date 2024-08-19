@@ -1,42 +1,34 @@
-import { Err, Ok, Result } from "./result";
+import { Result } from "./result";
 
-class CustomError extends Error {
-  constructor() {
-    super("data not found");
-    this.name = "Not Found";
+const ErrorKind = {
+  Throwable: "Throwable",
+  AsyncThrowable: "AsyncThrowable",
+} as const;
+type ErrorKind = typeof ErrorKind[keyof typeof ErrorKind];
+
+class AppError extends Error {
+  constructor(public kind: ErrorKind, message?: string) {
+    super(message);
+    this.message = `${this.kind}${this.message && `: ${this.message}`}`;
   }
 }
 
-function fetch_data(key: string): Result<string, CustomError> {
-  const data = {
-    cat: "Tom",
-    mouse: "Jerry",
-  }[key];
-  if (!data) return Err(new CustomError());
-  return Ok(data);
+function throwable(_arg1: number): number {
+  throw new AppError(ErrorKind.Throwable);
 }
 
-async function fetch_data_async(key: string): Promise<Result<string, CustomError>> {
-  const data = {
-    cat: "Tom",
-    mouse: "Jerry",
-  }[key];
+const safe_throwable = Result.try(throwable);
 
-  return !data ? Err(new CustomError()) : Ok(data);
+async function throwable_async(_arg1: string, _arg2: number): Promise<string> {
+  return Promise.reject(new AppError(ErrorKind.AsyncThrowable));
 }
 
-const unsafe = Result.try((x: number) => {
-  if (x) return x;
-  throw new Error("Not be zero!");
-});
+const async_safe_throwable = Result.try_async(throwable_async);
 
-const x = unsafe(0);
+// START MAIN FUNCTION
+(async function main() {
+  const _maked_safe_throwable = safe_throwable(0);
+  const _maked_safe_async_throwable = await async_safe_throwable("a", 0);
 
-console.log(x.is_err());
-console.log(fetch_data("dog").is_err());
-
-async function main() {
-  const data = await fetch_data_async("dog");
-  console.log(data.err()?.message);
-}
-main();
+  console.debug(_maked_safe_throwable.is_ok(), _maked_safe_async_throwable.is_ok());
+})();
