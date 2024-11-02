@@ -17,6 +17,23 @@ export class Result<T, E extends ToString> {
     this._type = type;
     this.value = value;
   }
+  
+  [Symbol.iterator]() {
+    let value = this.value;
+    let _type = this._type;
+    let iter = false;
+    
+    return {
+      next() {
+        if (_type === "ok" && !iter) {
+          iter = true;
+          return { value, done: false }
+        } else {
+          return { done: true }
+        }
+      }
+    }
+  }
 
   static try<Args extends any[], ReturnType>(fn: (...args: Args) => ReturnType) {
     return function(...args: Args): Result<ReturnType, Error> {
